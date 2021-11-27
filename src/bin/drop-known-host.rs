@@ -1,6 +1,7 @@
 use std::env;
 use std::collections::HashSet;
 use std::fs;
+use dialoguer;
 
 fn parse_host_line(line: &str) -> Option<String> {
     match line.split(" ").next() {
@@ -11,20 +12,35 @@ fn parse_host_line(line: &str) -> Option<String> {
     }
 }
 
+fn ask_for_host(host: &str) -> bool {
+    let input : String = dialoguer::Input::new()
+        .with_prompt(format!("Want to remove {}", host))
+        .interact_text()
+        .expect("cannot interact");
+    input == "y"
+}
+
 fn drop_hosts(file_path: &String, hosts: &HashSet<String>) -> String {
-    fs::read_to_string(file_path)
-        .expect("Cannot read hosts file")
-        .lines()
-        .filter(|line| {
-            match parse_host_line(line) {
-                Some(line) => {
-                    !hosts.contains(&line)
-                },
-                None => false,
-            }
-        })
-        .collect::<Vec<&str>>()
-        .join("\n")
+    let file_content = fs::read_to_string(file_path)
+        .expect("Cannot read hosts file");
+    let lines = file_content.lines();
+    let mut result: Vec<&str> = Vec::new();
+    for line in lines {
+        let host = parse_host_line(&line);
+        if host.is_none() {
+            result.push(line);
+            continue;
+        }
+        let host = host.unwrap();
+        if !hosts.contains(&host) {
+            result.push(line);
+            continue;
+        }
+        if !ask_for_host(&host) {
+            result.push(line);
+        }
+    }
+    result.join("\n")
 }
 
 fn main() {
