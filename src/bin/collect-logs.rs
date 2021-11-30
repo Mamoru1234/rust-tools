@@ -22,12 +22,13 @@ fn collect_logs(container: &String, logs_dir: &PathBuf) -> Result<(), Error> {
 
 fn main() {
     let containers: HashSet<String> = env::args().skip(1).collect();
+    let logs_dir = env::var("COLLECT_LOG_PATH").unwrap_or(String::from("."));
     if containers.is_empty() {
         println!("no containers to collect");
         return;
     }
     println!("Collect logs from {:?} ", containers);
-    let logs_dir = PathBuf::from(".");
+    let logs_dir = PathBuf::from(logs_dir);
     if !logs_dir.exists() {
         println!("Creating log dir");
         fs::create_dir_all(&logs_dir).expect("Cannot create dir");
