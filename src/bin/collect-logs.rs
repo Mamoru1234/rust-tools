@@ -12,7 +12,7 @@ fn collect_logs(container: &String, logs_dir: &PathBuf) -> Result<(), Error> {
     let container_errors = container_logs.try_clone()?;
 
     Command::new("sh")
-        .args(&["-c", &format!("docker logs {}", &container)[..]])
+        .args(&["-c", &format!("docker logs {}", &container)])
         .stdout(Stdio::from(container_logs))
         .stderr(Stdio::from(container_errors))
         .spawn()?

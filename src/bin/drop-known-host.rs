@@ -12,15 +12,16 @@ fn parse_host_line(line: &str) -> Option<String> {
     }
 }
 
-fn ask_for_host(host: &str) -> bool {
+fn ask_for_drop(line: &str) -> bool {
+    println!("{}", line);
     let input : String = dialoguer::Input::new()
-        .with_prompt(format!("Want to remove {}", host))
+        .with_prompt(format!("Want to remove"))
         .interact_text()
         .expect("cannot interact");
     input == "y"
 }
 
-fn drop_hosts(file_path: &String, hosts: &HashSet<String>) -> String {
+fn drop_hosts(file_path: &str, hosts: &HashSet<String>) -> String {
     let file_content = fs::read_to_string(file_path)
         .expect("Cannot read hosts file");
     let lines = file_content.lines();
@@ -36,7 +37,7 @@ fn drop_hosts(file_path: &String, hosts: &HashSet<String>) -> String {
             result.push(line);
             continue;
         }
-        if !ask_for_host(&host) {
+        if !ask_for_drop(&line) {
             result.push(line);
         }
     }
