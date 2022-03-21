@@ -22,9 +22,17 @@ fn setup_profile(profile: &Profile) {
   println!("Profile config {:?}", profile.email);
   spawn(&format!("git config user.name \"{}\"", profile.name)).unwrap();
   spawn(&format!("git config user.email \"{}\"", profile.email)).unwrap();
+  match &profile.ssh {
+    Some(ssh_file) => {
+      println!("Setup ssh {}", ssh_file);
+      spawn(&format!("git config core.sshCommand \"ssh -i {} -F /dev/null\"", ssh_file)).unwrap();
+    }
+    None => {},
+  }
 }
 
 fn main() {
+  println!("git config core.sshCommand \"ssh -i {} -F /dev/null\"", "test");
   let args: Vec<String> = env::args().collect();
   println!("args {:?}", args);
   if args.len() != 2 {
