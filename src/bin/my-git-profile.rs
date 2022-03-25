@@ -9,7 +9,8 @@ use std::process::{Command, ExitStatus};
 struct Profile {
   email: String,
   name: String,
-  ssh: Option<String>
+  ssh: Option<String>,
+  gpg: Option<String>,
 }
 
 fn spawn(command: &str) -> io::Result<ExitStatus> {
@@ -28,6 +29,16 @@ fn setup_profile(profile: &Profile) {
       spawn(&format!("git config core.sshCommand \"ssh -i {} -F /dev/null\"", ssh_file)).unwrap();
     }
     None => {},
+  }
+  match &profile.gpg {
+    Some(gpg_key) => {
+      println!("Setup gpg signature {}", gpg_key);
+      spawn(&format!("git config user.signingkey {}", gpg_key)).unwrap();
+      spawn("git config commit.gpgsign true").unwrap();
+    }
+    None => {
+      println!("No signature provided");
+    }
   }
 }
 
