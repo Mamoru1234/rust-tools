@@ -197,9 +197,9 @@ checksum = "73b4b750c782965c211b42f022f59af1fbceabdd026623714f104152f1ec149f"
 
 [[package]]
 name = "seahorse"
-version = "2.0.0"
+version = "2.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8dfc08bbde3ce4c9d10e69804e9599d5c2c5c60eb65b78bbffdcf46687654dca"
+checksum = "b3367111e93171f2f51f16fb46201bf6687f9da95eb1d409b6067cbc77af9c9c"
 
 [[package]]
 name = "serde"
