@@ -1,5 +1,5 @@
 use seahorse::{App, Command, Context};
-use serde::{Deserialize};
+use serde::Deserialize;
 use std::collections::HashMap;
 use std::fmt::Debug;
 use std::{fs, env};
@@ -10,7 +10,7 @@ use std::path::PathBuf;
 struct Profile {
   email: String,
   name: String,
-  ssh: String,
+  ssh: Option<String>,
   gpg: Option<String>,
 }
 
@@ -26,9 +26,16 @@ fn read_profile(target_profile: &str) -> Profile {
 fn setup_profile(profile: &Profile, working_dir: &PathBuf) {
     println!("Profile config {:?}", profile.email);
     spawn(&format!("git config user.name \"{}\"", profile.name), working_dir).unwrap();
-    spawn(&format!("git config core.sshCommand \"ssh -i {} -F /dev/null\"", profile.ssh), working_dir).unwrap();
-    println!("Setup ssh {}", profile.ssh);
     spawn(&format!("git config user.email \"{}\"", profile.email), working_dir).unwrap();
+    match &profile.ssh {
+      Some(ssh_key) => {
+        spawn(&format!("git config core.sshCommand \"ssh -i {} -F /dev/null\"", ssh_key), working_dir).unwrap();
+        println!("Setup ssh {}", ssh_key);
+      }
+      None => {
+        println!("No ssh key provided");
+      } 
+    }
     match &profile.gpg {
       Some(gpg_key) => {
         println!("Setup gpg signature {}", gpg_key);
@@ -92,7 +99,14 @@ fn clone_action(c: &Context) {
     let profile = read_profile(&profile);
     let repository = c.args.get(1).unwrap();
     println!("Cloning {}", repository);
-    spawn(&format!("ssh-agent bash -c \"ssh-add {}; git clone {}\"", profile.ssh, repository), &current_dir).unwrap();
+    match &profile.ssh {
+        Some(ssh) => {
+            spawn(&format!("ssh-agent bash -c \"ssh-add {}; git clone {}\"", ssh, repository), &current_dir).unwrap();
+        },
+        None => {
+            spawn(&format!("git clone {}", repository), &current_dir).unwrap();
+        }
+    }
     let project_name = get_dir_name(repository).expect("Cannot get dir name");
     let mut project_dir = current_dir.clone();
     project_dir.push(&project_name);
