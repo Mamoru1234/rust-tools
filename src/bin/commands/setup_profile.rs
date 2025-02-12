@@ -3,17 +3,18 @@ use std::{env, path::PathBuf};
 use log::info;
 use seahorse::{Command, Context};
 
-use crate::modules::{config_utils::{read_profile, Profile}, git_utils::{ensure_ssh_host, setup_gpg}, spawn_utils::spawn};
+use crate::modules::{config_utils::{read_profile, Profile}, git_utils::{ensure_ssh_host, open_repository, setup_gpg}};
 
 pub fn setup_profile(profile: &Profile, working_dir: &PathBuf) {
   info!("Profile config {:?}", profile.email);
-  spawn(&format!("git config user.name \"{}\"", profile.name), working_dir).unwrap();
-  spawn(&format!("git config user.email \"{}\"", profile.email), working_dir).unwrap();
+  let repo = open_repository(working_dir);
+  repo.config().unwrap().set_str("user.name", &profile.name).unwrap();
+  repo.config().unwrap().set_str("user.email", &profile.email).unwrap();
   if let Some(ssh_host) = &profile.ssh_host {
-    ensure_ssh_host("origin", ssh_host, working_dir);
+    ensure_ssh_host(&repo, "origin", ssh_host);
   }
   if let Some(gpg_key) = &profile.gpg {
-    setup_gpg(gpg_key, working_dir);
+    setup_gpg(&repo, gpg_key);
   }
 }
 

@@ -17,27 +17,27 @@ pub fn spawn(command: &str, current_dir: &PathBuf) -> Option<()> {
   }
 }
 
-#[derive(Debug)]
-pub struct SpawnOutput {
-  pub stdout: String,
-  #[allow(dead_code)]
-  pub stderr: String,
-}
+// #[derive(Debug)]
+// pub struct SpawnOutput {
+//   pub stdout: String,
+//   #[allow(dead_code)]
+//   pub stderr: String,
+// }
 
-pub fn spawn_output(command: &str, current_dir: &PathBuf) -> Option<SpawnOutput> {
-  let output = process::Command::new("sh")
-      .args(&["-c", command])
-      .current_dir(current_dir)
-      .output()
-      .expect("failed to execute command");
+// pub fn spawn_output(command: &str, current_dir: &PathBuf) -> Option<SpawnOutput> {
+//   let output = process::Command::new("sh")
+//       .args(&["-c", command])
+//       .current_dir(current_dir)
+//       .output()
+//       .expect("failed to execute command");
 
-  if output.status.success() {
-      return Some(SpawnOutput {
-        stdout: String::from_utf8(output.stdout).expect("Cannot parse stdout"),
-        stderr: String::from_utf8(output.stderr).expect("Cannot parse stderr")
-     })
-  } else {
-      info!("Non zero exit code {}", command);
-      return None
-  }
-}
+//   if output.status.success() {
+//       return Some(SpawnOutput {
+//         stdout: String::from_utf8(output.stdout).expect("Cannot parse stdout"),
+//         stderr: String::from_utf8(output.stderr).expect("Cannot parse stderr")
+//      })
+//   } else {
+//       info!("Non zero exit code {}", command);
+//       return None
+//   }
+// }

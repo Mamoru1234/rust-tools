@@ -34,14 +34,15 @@ fn clone_action(c: &Context) {
   info!("Cloning {}", repository);
   let project_name = get_project_name(repository).expect("Cannot get project name");
   let project_dir = current_dir.join(project_name);
-  match &profile.ssh_host {
+  let repository_url = match &profile.ssh_host {
       Some(ssh_host) => {
-          spawn(&format!("git clone {}", replace_host(repository, &ssh_host)), &current_dir).unwrap();
+        replace_host(repository, &ssh_host)
       }
       None => {
-          spawn(&format!("git clone {}", repository), &current_dir).unwrap();
+        repository.to_string()
       }
-  }
+  };
+  spawn(&format!("git clone {}", repository_url), &current_dir).expect("Cannot clone repository");
   info!("Cloned into {:?}", &project_dir);
   setup_profile(&profile, &project_dir);
 }

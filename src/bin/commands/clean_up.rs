@@ -5,6 +5,8 @@ use inquire::Confirm;
 use log::info;
 use seahorse::{Command, Context};
 
+use crate::modules::git_utils::open_repository;
+
 fn check_has_changes(repo: &Repository) -> bool {
   let mut status_options = StatusOptions::new();
   let statuses = &repo.statuses(Some(status_options.include_ignored(false))).unwrap();
@@ -35,10 +37,7 @@ fn set_branch(repo: &Repository, name: &str) {
 fn clean_up(_ctx: &Context) {
   let target_repository = env::current_dir().unwrap();
   info!("Clean-up command {:?}", target_repository);
-  let repo = match Repository::open(target_repository) {
-    Ok(repo) => repo,
-    Err(e) => panic!("failed to open: {}", e),
-  };
+  let repo = open_repository(&target_repository);
   set_branch(&repo, "master");
   for branch_it in repo.branches(Some(BranchType::Local)).unwrap() {
     let (mut branch, _) = branch_it.unwrap();
