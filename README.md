@@ -18,7 +18,7 @@ Example:
     "sample": {
         "email": "<string>",
         "name": "<string>",
-        "ssh": "<path to private ssh>",
+        "ssh_host": "Optional, host to use for repo remote",
         "gpg": "Optional, key id for GPG signature"
     }
 }
