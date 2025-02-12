@@ -3,8 +3,8 @@ use env_logger::Env;
 use seahorse:: App;
 use std::env;
 
-mod modules;
 mod commands;
+mod modules;
 
 fn main() {
   env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
