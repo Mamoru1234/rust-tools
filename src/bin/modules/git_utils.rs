@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 
-use git2::Repository;
+use git2::{Repository, StatusOptions};
 use log::info;
 
 const LEGACY_SSH_COMMAND_KEY: &str = "core.sshcommand";
@@ -32,6 +32,14 @@ pub fn setup_gpg(repository: &Repository, gpg_key: &str) {
   let mut config = repository.config().unwrap();
   config.set_str("user.signingkey", gpg_key).expect("Cannot set signing key");
   config.set_bool("commit.gpgsign", true).expect("Cannot set gpg sign");
+}
+
+pub fn check_has_changes(repo: &Repository) -> bool {
+  let mut status_options = StatusOptions::new();
+  let statuses = &repo.statuses(Some(status_options
+    .include_untracked(true)
+    .include_ignored(false))).unwrap();
+  return !statuses.is_empty();
 }
 
 pub fn open_repository(working_dir: &PathBuf) -> Repository {

@@ -1,4 +1,4 @@
-use commands::{clone_command, clean_up_command, setup_command};
+use commands::{clean_up_command, clone_command, pull_command, setup_command};
 use env_logger::Env;
 use seahorse:: App;
 use std::env;
@@ -14,6 +14,7 @@ fn main() {
       .usage("my-git-utils [commands]")
       .command(clone_command())
       .command(setup_command())
+      .command(pull_command())
       .command(clean_up_command());
   app.run(args);
 }

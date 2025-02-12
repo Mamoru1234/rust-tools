@@ -1,17 +1,11 @@
 use std::env;
 
-use git2::{BranchType, Repository, StatusOptions};
+use git2::{BranchType, Repository};
 use inquire::Confirm;
 use log::info;
 use seahorse::{Command, Context};
 
-use crate::modules::git_utils::open_repository;
-
-fn check_has_changes(repo: &Repository) -> bool {
-  let mut status_options = StatusOptions::new();
-  let statuses = &repo.statuses(Some(status_options.include_ignored(false))).unwrap();
-  return statuses.len() != 0;
-}
+use crate::modules::git_utils::{check_has_changes, open_repository};
 
 fn set_branch(repo: &Repository, name: &str) {
   let reference = repo.resolve_reference_from_short_name(name).unwrap();
