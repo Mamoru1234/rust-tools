@@ -7,9 +7,10 @@ use crate::modules::{config_utils::read_profile, git_utils::replace_host, spawn_
 
 pub fn clone_command() -> Command {
   Command::new("clone")
-      .description("clone command")
-      .usage("my-git-profile clone [profile] [repository]")
-      .action(clone_action)
+    .alias("cp")
+    .description("clone command")
+    .usage("my-git-profile clone [profile] [repository]")
+    .action(clone_action)
 }
 
 fn get_project_name(repository: &str) -> Option<String> {

@@ -1,4 +1,4 @@
-use commands::{clone_command, setup_command};
+use commands::{clone_command, clean_up_command, setup_command};
 use env_logger::Env;
 use seahorse:: App;
 use std::env;
@@ -13,6 +13,7 @@ fn main() {
       .version(env!("CARGO_PKG_VERSION"))
       .usage("my-git-utils [commands]")
       .command(clone_command())
-      .command(setup_command());
+      .command(setup_command())
+      .command(clean_up_command());
   app.run(args);
 }

@@ -20,6 +20,7 @@ pub fn setup_profile(profile: &Profile, working_dir: &PathBuf) {
 
 pub fn setup_command() -> Command {
   Command::new("setup")
+      .alias("sp")
       .description("setup command")
       .usage("my-git-profile clone [profile]")
       .action(setup_action)
