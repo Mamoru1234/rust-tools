@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use tokio::fs;
 
 pub fn get_path() -> String {
-  "/home/oleksii/.config/rust-tools/ec2.index.json".to_string()
+  env!("HOME").to_owned() + "/.config/rust-tools/ec2.index.json"
 }
 
 pub async fn read_index() -> Box<HashMap<String, String>> {

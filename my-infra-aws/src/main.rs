@@ -4,12 +4,10 @@ pub mod commands;
 pub mod utils;
 
 use commands::ec2;
-use dotenv::dotenv;
 use env_logger::{Env, Builder};
 use seahorse::App;
 
 fn main() {
-    dotenv().ok();
     Builder::from_env(Env::default().default_filter_or("info")).init();
     let args: Vec<String> = env::args().collect();
     let app = App::new(env!("CARGO_PKG_NAME"))
