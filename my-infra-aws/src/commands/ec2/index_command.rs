@@ -6,7 +6,7 @@ use log::info;
 use seahorse::{Command, Context};
 use tokio::{fs, runtime::Runtime};
 
-use crate::utils::{ec2_client::get_ec2_client, ec2_index::get_path};
+use crate::utils::{aws_client::get_ec2_client, ec2_index::get_path};
 
 fn get_instance_name(instance: &Instance) -> Option<String> {
     let name_tag= instance.tags().iter()
@@ -15,9 +15,9 @@ fn get_instance_name(instance: &Instance) -> Option<String> {
 }
 
 async fn get_index(client: &aws_sdk_ec2::Client) -> Box<HashMap<String, String>> {
-    let describe_output = client.describe_instances().send().await.expect("Cannot get instances");
+    let describe_output = client.describe_instances().into_paginator().items().send().try_collect().await.expect("Cannot get instances");
     Box::new(describe_output
-        .reservations().iter()
+        .iter()
         .flat_map(|it| it.instances())
         .filter_map(|instance| {
             Some((
@@ -42,7 +42,7 @@ fn index_action(_: &Context) {
 }
 
 pub fn index_command() -> Command {
-  Command::new("ec2:index")
+  Command::new("index")
     .description("Index ec2 instances")
     .action(index_action)
 }

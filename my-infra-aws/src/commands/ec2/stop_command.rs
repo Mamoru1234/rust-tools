@@ -2,7 +2,7 @@ use log::info;
 use seahorse::{Command, Context};
 use tokio::runtime::Runtime;
 
-use crate::utils::{ec2_client::get_ec2_client, ec2_index::read_index};
+use crate::utils::{aws_client::get_ec2_client, ec2_index::read_index};
 
 async fn stop_action_async(ctx: &Context) {
   let service_name: String = ctx.args.get(0).expect("Service name is required").to_string();
@@ -18,5 +18,5 @@ fn stop_action(ctx: &Context) {
 }
 
 pub fn stop_command() -> Command {
-  Command::new("ec2:stop").description("Stop ec2 instance").action(stop_action)
+  Command::new("stop").description("Stop ec2 instance").action(stop_action)
 }

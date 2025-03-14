@@ -3,7 +3,7 @@ use std::env;
 pub mod commands;
 pub mod utils;
 
-use commands::ec2;
+use commands::{ec2::ec2_command, ecr::ecr_command};
 use env_logger::{Env, Builder};
 use seahorse::App;
 
@@ -14,8 +14,7 @@ fn main() {
         .description(env!("CARGO_PKG_DESCRIPTION"))
         .author(env!("CARGO_PKG_AUTHORS"))
         .version(env!("CARGO_PKG_VERSION"))
-        .command(ec2::index_command())
-        .command(ec2::start_command())
-        .command(ec2::stop_command());
+        .command(ec2_command())
+        .command(ecr_command());
     app.run(args);
 }

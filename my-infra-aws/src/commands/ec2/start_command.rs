@@ -5,7 +5,7 @@ use log::info;
 use seahorse::{Command, Context};
 use tokio::runtime::Runtime;
 
-use crate::utils::{ec2_client::get_ec2_client, ec2_index::read_index, hosts::replace_host_ip};
+use crate::utils::{aws_client::get_ec2_client, ec2_index::read_index, hosts::replace_host_ip};
 
 async fn wait_for_instance_ready(
   client: &aws_sdk_ec2::Client,
@@ -50,5 +50,5 @@ fn start_action(ctx: &Context) {
 }
 
 pub fn start_command() -> Command {
-  Command::new("ec2:start").description("Start ec2 instance").action(start_action)
+  Command::new("start").description("Start ec2 instance").action(start_action)
 }
