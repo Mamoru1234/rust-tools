@@ -1,6 +1,6 @@
 use std::env;
 
-use git2::{RepositoryState, StashFlags};
+use git2::RepositoryState;
 use log::info;
 use seahorse::{Command, Context};
 
@@ -9,19 +9,19 @@ use crate::modules::{git_utils::{check_has_changes, open_repository}, spawn_util
 fn pull_action(_c: &Context) {
   info!("Pulling");
   let target_repository = env::current_dir().unwrap();
-  let mut repository = open_repository(&target_repository);
+  let repository = open_repository(&target_repository);
   let repo_state = repository.state();
   if repo_state != RepositoryState::Clean {
     panic!("Repository is not clean");
   }
-  let signature = repository.signature().expect("Cannot get signature");
   let has_changes = check_has_changes(&repository);
   if has_changes{
-    repository.stash_save2(&signature, None, Some(StashFlags::INCLUDE_UNTRACKED)).expect("Cannot save stash");
+    spawn("git add .", &target_repository).expect("Cannot add changes");
+    spawn("git stash", &target_repository).expect("Cannot stash changes");
   }
   spawn("git pull -r", &target_repository).expect("Cannot pull repository");
   if has_changes {
-    repository.stash_pop(0, None).expect("Cannot pop stash");
+    spawn("git stash pop", &target_repository).expect("Cannot pop stash");
   }
 }
 
