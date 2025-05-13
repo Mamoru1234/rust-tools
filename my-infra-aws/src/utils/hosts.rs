@@ -1,7 +1,6 @@
 use std::fs;
 
 use log::warn;
-use nix::unistd::Uid;
 
 fn get_hosts_path() -> String {
   if cfg!(debug_assertions) {
@@ -16,9 +15,6 @@ fn replace_line_ip(line: &str, ip_addr: &str) -> String {
 }
 
 pub fn replace_host_ip(service_name: &str, ip_addr: &str) {
-  if !cfg!(debug_assertions) && !Uid::effective().is_root() {
-    panic!("Script should be executed as root")
-  }
   let service_anchor = "#EC2Instance: ".to_owned() + service_name;
   let hosts_path = get_hosts_path();
   let hosts = fs::read_to_string(&hosts_path).unwrap();
